@@ -1,0 +1,34 @@
+# Folder virtual environment (bisa beda nama, contoh: venv, env, .venv, dll)
+venv/
+env/
+.venv/
+
+# File Python cache dan artefak
+__pycache__/
+*.py[cod]
+*$py.class
+
+# VSCode settings (kalau pakai VSCode)
+.vscode/
+
+# File database sementara
+*.sqlite3
+
+# Jupyter Notebook checkpoint
+.ipynb_checkpoints/
+
+# Log files
+*.log
+
+# macOS stuff
+.DS_Store
+
+# Python environment config (jika ada)
+.Python
+
+# dotenv
+.env
+.env.*
+
+# Compiled Cython files
+*.so
