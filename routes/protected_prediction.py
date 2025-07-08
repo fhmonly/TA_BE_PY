@@ -18,7 +18,7 @@ def predict_auto(request: AutoPredictionRequest):
 
         series = df['amount']
 
-        result = auto_arima_forecast(series, forecast_periods=1)
+        result = auto_arima_forecast(series, forecast_periods=request.future_steps)
 
         return AutoPredictionResponse(
             rmse=result["rmse"],
@@ -47,14 +47,14 @@ def predict_manual(request: ManualPredictionRequest):
 
         p, d, q = request.arima_model
 
-        result = manual_arima_forecast(series, p=p, d=d, q=q, forecast_periods=1)
+        result = manual_arima_forecast(series, p=p, d=d, q=q, forecast_periods=request.future_steps)
 
         return ManualPredictionResponse(
             arima_order=tuple(result["arima_order"]),
             prediction=result["prediction"],
             lower=result["lower"],
             upper=result["upper"],
-            success=True
+            success=True,            
         )
 
     except ValueError as ve:

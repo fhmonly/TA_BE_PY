@@ -8,6 +8,7 @@ class BasePredictionRequest(BaseModel):
     value_column: str='sold_qty'
     date_column: str='date'
     date_regroup: bool=False
+    future_steps: int=1
 
 
 class AutoPredictionRequest(BasePredictionRequest):

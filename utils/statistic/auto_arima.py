@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 
 warnings.filterwarnings("ignore", category=FutureWarning)
-def auto_arima_forecast(series: pd.Series, train_ratio=0.8, forecast_periods: int = 1) -> dict:
+def auto_arima_forecast(series: pd.Series, train_ratio=0.7, forecast_periods: int = 1) -> dict:
     if series is None or series.empty:
         raise ValueError("Data tidak valid atau kosong.")
 
