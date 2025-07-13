@@ -5,9 +5,8 @@ from schema.prediction import (
     ManualPredictionRequest,
     ManualPredictionResponse,
 )
-from utils.statistic.auto_arima import auto_arima_forecast
-from utils.statistic.manual_arima import manual_arima_forecast
-from utils.data_preparation import read_csv_string_to_df, df_group_by_interval
+from utils.statistic.homemade_arima import MyARIMA
+from utils.data_preparation import read_csv_string_to_df
 
 router = APIRouter()
 
@@ -18,15 +17,19 @@ def predict_auto(request: AutoPredictionRequest):
 
         series = df['amount']
 
-        result = auto_arima_forecast(series, forecast_periods=request.future_steps)
+        model = MyARIMA(
+            dataset=series.tolist()
+        )
+        model.fit()
+        result = model.forecast(steps=request.future_steps)
 
         return AutoPredictionResponse(
-            rmse=result["rmse"],
-            mape=result["mape"],
-            arima_order=tuple(result["arima_order"]),
-            prediction=result["prediction"],
-            lower=result["lower"],
-            upper=result["upper"],
+            rmse=model.best_model["rmse"],
+            mape=model.best_model["mape"],
+            arima_order=model.best_model["order"],
+            prediction=result["predictions"],
+            lower=result["lower_bound"],
+            upper=result["upper_bound"],
             success=True
         )
 
@@ -47,13 +50,17 @@ def predict_manual(request: ManualPredictionRequest):
 
         p, d, q = request.arima_model
 
-        result = manual_arima_forecast(series, p=p, d=d, q=q, forecast_periods=request.future_steps)
+        model = MyARIMA(
+            dataset=series.tolist(),
+            model={'p': p, 'd': d, 'q': q}
+        )
+        result = model.forecast(steps=request.future_steps)
 
         return ManualPredictionResponse(
-            arima_order=tuple(result["arima_order"]),
-            prediction=result["prediction"],
-            lower=result["lower"],
-            upper=result["upper"],
+            arima_order=model.best_model['order'],
+            prediction=result["predictions"],
+            lower=result["lower_bound"],
+            upper=result["upper_bound"],
             success=True,            
         )
 
